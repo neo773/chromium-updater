@@ -1,24 +1,18 @@
 #!/usr/bin/env node
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateChromium = void 0;
-const easydl_1 = __importDefault(require("easydl"));
-const cli_progress_1 = __importDefault(require("cli-progress"));
-const execa_1 = require("execa");
-const nanospinner_1 = require("nanospinner");
-const spinner = (0, nanospinner_1.createSpinner)("Checking for updates").start();
+import EasyDl from "easydl";
+import cliProgress from "cli-progress";
+import { execa } from "execa";
+import { createSpinner } from "nanospinner";
+const spinner = createSpinner("Checking for updates").start();
 const isRunningAsRoot = () => {
     return process.getuid && process.getuid() === 0;
 };
 const downloadAndExtract = async (url, outputPath) => {
-    const progressBar = new cli_progress_1.default.SingleBar({
+    const progressBar = new cliProgress.SingleBar({
         format: "Downloading [{bar}] {percentage}% | ETA: {eta}s | {value}/{total}",
     });
     progressBar.start(100, 0);
-    const downloadInstance = new easydl_1.default(url, outputPath, {
+    const downloadInstance = new EasyDl(url, outputPath, {
         existBehavior: "overwrite",
     });
     await downloadInstance
@@ -27,13 +21,13 @@ const downloadAndExtract = async (url, outputPath) => {
     })
         .wait();
     progressBar.stop();
-    await (0, execa_1.execa)("tar", ["-xJf", outputPath, "-C", "/Applications"]);
+    await execa("tar", ["-xJf", outputPath, "-C", "/Applications"]);
 };
 const getLocalChromiumVersion = async () => {
-    const { stdout } = await (0, execa_1.execa)("/Applications/Chromium.app/Contents/MacOS/Chromium", ["--version"]);
+    const { stdout } = await execa("/Applications/Chromium.app/Contents/MacOS/Chromium", ["--version"]);
     return stdout.trim().split(" ")[1];
 };
-const updateChromium = async () => {
+export const updateChromium = async () => {
     try {
         const apiUrl = "https://api.github.com/repos/macchrome/macstable/releases";
         const response = await fetch(apiUrl);
@@ -71,5 +65,4 @@ const updateChromium = async () => {
         });
     }
 };
-exports.updateChromium = updateChromium;
-(0, exports.updateChromium)();
+updateChromium();

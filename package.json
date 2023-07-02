@@ -6,6 +6,7 @@
   "keywords": ["Chromium Updater"],
   "author": "neo773",
   "license": "MIT",
+  "type": "module",
   "repository": {
     "url": "https://github.com/neo773/chromium-updater"
   },
