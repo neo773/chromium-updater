@@ -1,0 +1,30 @@
+{
+  "name": "chromium-updater",
+  "version": "0.0.1",
+  "description": "Automated updater for Ungoogled Chromium",
+  "main": "index.js",
+  "keywords": ["Chromium Updater"],
+  "author": "neo773",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/neo773/chromium-updater"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "bin": {
+    "update-chromium": "./dist/index.js"
+  },
+  "dependencies": {
+    "@types/node": "^20.3.3",
+    "cli-progress": "^3.12.0",
+    "easydl": "^1.0.3",
+    "execa": "^7.1.1",
+    "nanospinner": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/cli-progress": "^3.11.0",
+    "tsup": "^7.1.0",
+    "typescript": "^5.1.6"
+  }
+}
