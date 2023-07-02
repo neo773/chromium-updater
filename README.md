@@ -10,6 +10,6 @@ Note: This only works on macOS for now, happy to accept a PR for Windows
 
 You can install Chromium Updater globally by running:
 ```bash
-npm install -g chromium-updater
-sudo chromium-updater
+npm install -g ungoogled-chromium-updater
+sudo ungoogled-chromium-updater
 ```
