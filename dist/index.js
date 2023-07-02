@@ -21,6 +21,10 @@ const downloadAndExtract = async (url, outputPath) => {
     })
         .wait();
     progressBar.stop();
+    try {
+        await execa("killall Chromium");
+    }
+    catch (error) { }
     await execa("tar", ["-xJf", outputPath, "-C", "/Applications"]);
 };
 const getLocalChromiumVersion = async () => {

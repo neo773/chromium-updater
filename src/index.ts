@@ -32,6 +32,11 @@ const downloadAndExtract = async (
     .wait()
 
   progressBar.stop()
+
+  try {
+    await execa("killall Chromium")
+  } catch (error) {}
+  
   await execa("tar", ["-xJf", outputPath, "-C", "/Applications"])
 }
 
