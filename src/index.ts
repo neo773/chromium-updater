@@ -50,7 +50,7 @@ const getLocalChromiumVersion = async (): Promise<string> => {
 
 export const updateChromium = async () => {
   try {
-    const apiUrl = "https://api.github.com/repos/macchrome/macstable/releases"
+    const apiUrl = "https://api.github.com/repos/ungoogled-software/ungoogled-chromium-macos/releases"
     const response = await fetch(apiUrl)
     const releases: GitHubResponse[] = await response.json()
     const latestRelease = releases[0]
