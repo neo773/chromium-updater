@@ -1,6 +1,6 @@
 {
   "name": "ungoogled-chromium-updater",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Automated updater for Ungoogled Chromium",
   "main": "index.js",
   "keywords": ["Chromium Updater"],
