@@ -4,8 +4,6 @@ import EasyDl from "easydl"
 import cliProgress from "cli-progress"
 import { execa } from "execa"
 import { createSpinner } from "nanospinner"
-import { existsSync } from "fs"
-import { join } from "path"
 import { type GitHubResponse } from "./types"
 
 const spinner = createSpinner("Checking for updates").start()
@@ -15,7 +13,7 @@ const getArchitecture = (): string => {
   return arch === "arm64" ? "arm64" : "x86_64"
 }
 
-const downloadAndInstallDMG = async (
+const downloadAndOpenDMG = async (
   url: string,
   outputPath: string
 ) => {
@@ -39,34 +37,18 @@ const downloadAndInstallDMG = async (
   try {
     // Kill Chromium if it's running
     await execa("killall", ["Chromium"]).catch(() => {})
+
+    // Mount the DMG with UI to allow manual installation
+    await execa("open", [outputPath])
     
-    // Wait a moment to ensure the process is properly terminated
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    spinner.success({
+      text: "DMG file opened. Please drag Chromium.app to your Applications folder manually."
+    })
     
-    // Mount the DMG
-    const { stdout: mountPoint } = await execa("hdiutil", ["attach", outputPath, "-nobrowse", "-noautoopen"])
-    const volumePath = mountPoint.split("\t").pop()?.trim() || ""
-    
-    if (!volumePath) {
-      throw new Error("Failed to mount DMG file")
-    }
-    
-    // Remove existing Chromium app
-    if (existsSync("/Applications/Chromium.app")) {
-      await execa("rm", ["-rf", "/Applications/Chromium.app"])
-    }
-    
-    // Copy Chromium app from mounted DMG to Applications
-    const appPath = join(volumePath, "Chromium.app")
-    await execa("cp", ["-R", appPath, "/Applications/"])
-    
-    // Detach the DMG
-    await execa("hdiutil", ["detach", volumePath, "-force"])
-    
-    // Remove the downloaded DMG file
-    await execa("rm", ["-f", outputPath])
+    // Note: We're not automatically removing the DMG file so the user can access it
+    console.log("The DMG file is located at:", outputPath)
   } catch (error) {
-    console.error("Error during installation:", error)
+    console.error("Error opening DMG:", error)
     throw error
   }
 }
@@ -128,10 +110,10 @@ export const updateChromium = async () => {
       const url = asset.browser_download_url
       const outputPath = "/tmp/chromium.dmg"
       
-      await downloadAndInstallDMG(url, outputPath)
+      await downloadAndOpenDMG(url, outputPath)
 
       spinner.success({
-        text: `Chromium updated to v${remoteVersion} successfully`,
+        text: `Downloaded Chromium v${remoteVersion}. Please complete the installation manually.`,
       })
       process.exit(0)
     }
